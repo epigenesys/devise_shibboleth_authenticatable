@@ -36,7 +36,7 @@ module Devise
 
 	  if (resource.nil? && Devise.shibboleth_create_user)
             logger.fatal("Creating user(#{env['eppn']}).")
-	    resource = User.new()
+	    resource = AdminUser.new()
           end
           return nil unless resource
 

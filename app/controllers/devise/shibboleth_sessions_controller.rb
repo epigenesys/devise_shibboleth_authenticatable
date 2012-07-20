@@ -1,6 +1,6 @@
 class Devise::ShibbolethSessionsController < Devise::SessionsController
   unloadable
-  
+
   def new
     if request.env['eppn']
       authenticate_with_shibboleth request.env
@@ -13,7 +13,7 @@ class Devise::ShibbolethSessionsController < Devise::SessionsController
     destination << request.host
     destination << ":#{request.port.to_s}" unless request.port == 80
     destination << after_sign_in_path_for(resource)
-    
+
     shib_login_url = shib_config['shibb_login_url'] + "?target=" + URI.escape(destination, Regexp.new("[^#{URI::PATTERN::UNRESERVED}]"))
 
     redirect_to(shib_login_url)
@@ -28,7 +28,7 @@ class Devise::ShibbolethSessionsController < Devise::SessionsController
   # Repeating Myself.  Need to move to a helper
   def authenticate_with_shibboleth(env)
 
-    resource = User.find_by_email(env['eppn'])
+    resource = AdminUser.find_by_email(env['eppn'])
 
     if (!resource.nil? && !Devise.shibboleth_create_user)
       logger.warn("User(#{env['eppn']}) not found.  Not configured to create the user.")
@@ -37,7 +37,7 @@ class Devise::ShibbolethSessionsController < Devise::SessionsController
 
     if (resource.nil? && Devise.shibboleth_create_user)
       logger.fatal("Creating user(#{env['eppn']}).")
-      resource = User.new()
+      resource = AdminUser.new()
     end
     return nil unless resource
 
@@ -53,7 +53,7 @@ class Devise::ShibbolethSessionsController < Devise::SessionsController
       logger.info("Saving #{env[header]} to #{model}")
       field = "#{model}="
       value = env[header]
-      user.send(field, value.to_s) 
+      user.send(field, value.to_s)
     end
   end
 
