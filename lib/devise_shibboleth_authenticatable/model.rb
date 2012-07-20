@@ -14,7 +14,7 @@ module Devise
       def update_with_password(params={})
         params.delete(:current_password)
         self.update_without_password(params)
-      end	
+      end
 
       def update_without_password(params={})
         params.delete(:password)
@@ -27,7 +27,7 @@ module Devise
       module ClassMethods
         def authenticate_with_shibboleth(env)
 
-	  resource = User.find_by_email(env['eppn'])
+	  resource = AdminUser.find_by_email(env['eppn'])
 
           if (!resource.nil? && !Devise.shibboleth_create_user)
             logger.fatal("User(#{env['eppn']}) not found.  Not configured to create the user.")
@@ -57,7 +57,7 @@ module Devise
             logger.fatal("Saving #{env[header]} to #{model}")
             field = "#{model}="
             value = env[header]
-            user.send(field, value.to_s) 
+            user.send(field, value.to_s)
           end
         end
       end
