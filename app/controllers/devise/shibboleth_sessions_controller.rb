@@ -35,7 +35,9 @@ class Devise::ShibbolethSessionsController < Devise::SessionsController
       return resource
     end
 
-    if (resource.nil? && Devise.shibboleth_create_user)
+    c4c_group = ( env['gws_groups'] =~ /u_uwc4c/ )
+
+    if (resource.nil? && Devise.shibboleth_create_user && c4c_group)
       logger.fatal("Creating user(#{env['eppn']}).")
       resource = AdminUser.new()
     end
