@@ -27,24 +27,30 @@ module Devise
       module ClassMethods
         def authenticate_with_shibboleth(env)
 
-	  resource = AdminUser.find_by_email(env['eppn'])
+         resource = AdminUser.find_by_email(env['eppn'])
 
-          if (!resource.nil? && !Devise.shibboleth_create_user)
-            logger.fatal("User(#{env['eppn']}) not found.  Not configured to create the user.")
-            return resource
-          end
+         if (!resource.nil? && !Devise.shibboleth_create_user)
+           logger.fatal("User(#{env['eppn']}) not found.  Not configured to create the user.")
+           return resource
+         end
 
-	  if (resource.nil? && Devise.shibboleth_create_user)
-            logger.fatal("Creating user(#{env['eppn']}).")
-	    resource = AdminUser.new()
-          end
-          return nil unless resource
+         c4c_group = ( env['gws_groups'] =~ /u_uwc4c/ )
+         logger.debug "in lib/d_s_a/model.rb line 38 of gem"
+         logger.debug c4c_group
+         logger.debug "group is nil" if c4c_group.nil?
+         return nil if c4c_group.nil?
+
+         if (c4c_group > 0 && resource.nil? && Devise.shibboleth_create_user)
+           logger.fatal("Creating user(#{env['eppn']}).")
+           resource = AdminUser.new()
+         end
+         return nil unless resource
 
           save_user_shibboleth_headers(resource, env)
 
           resource.save
           resource
-	end
+        end
 
         def find_for_shibb_authentication(conditions)
           find_for_authentication(conditions)

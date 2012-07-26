@@ -2,7 +2,7 @@ class Devise::ShibbolethSessionsController < Devise::SessionsController
   unloadable
 
   def new
-    if request.env['eppn']
+    if request.env['eppn'] && (request.env['gws_groups'] =~ /u_uwc4c/ )
       authenticate_with_shibboleth request.env
     end
 
@@ -36,8 +36,13 @@ class Devise::ShibbolethSessionsController < Devise::SessionsController
     end
 
     c4c_group = ( env['gws_groups'] =~ /u_uwc4c/ )
+    logger.debug "in app controllers devise shibboleth_sessions_controller.rb line 39 of gem"
+    logger.debug c4c_group
+    logger.debug "is it nil?"
+    logger.debug c4c_group.nil?
+    return nil if c4c_group.nil?
 
-    if (resource.nil? && Devise.shibboleth_create_user && c4c_group)
+    if (c4c_group && resource.nil? && Devise.shibboleth_create_user)
       logger.fatal("Creating user(#{env['eppn']}).")
       resource = AdminUser.new()
     end
