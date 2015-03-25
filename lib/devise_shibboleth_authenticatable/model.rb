@@ -14,7 +14,7 @@ module Devise
       def update_with_password(params={})
         params.delete(:current_password)
         self.update_without_password(params)
-      end
+      end 
 
       def update_without_password(params={})
         params.delete(:password)
@@ -27,30 +27,26 @@ module Devise
       module ClassMethods
         def authenticate_with_shibboleth(env)
 
-         resource = AdminUser.find_by_email(env['eppn'])
+          # resource = AdminUser.find_by_email(env['eppn'])
 
-         if (!resource.nil? && !Devise.shibboleth_create_user)
-           logger.fatal("User(#{env['eppn']}) not found.  Not configured to create the user.")
-           return resource
-         end
+          auth_key = self.authentication_keys.first
+          auth_key_value = (self.case_insensitive_keys || []).include?(auth_key) ? env['eppn'].downcase : env['eppn']
 
-         c4c_group = ( env['gws_groups'] =~ /u_uwc4c/ )
-         logger.debug "in lib/d_s_a/model.rb line 38 of gem"
-         logger.debug c4c_group
-         logger.debug "group is nil" if c4c_group.nil?
-         return nil if c4c_group.nil?
+          resource = where(auth_key => auth_key_value).first
 
-         if (c4c_group > 0 && resource.nil? && Devise.shibboleth_create_user)
-           logger.fatal("Creating user(#{env['eppn']}).")
-           resource = AdminUser.new()
-         end
-         return nil unless resource
+          if (resource.nil? && !Devise.shibboleth_create_user)
+            logger.info("User(#{auth_key_value}) not found.  Not configured to create the user.")
+            return nil 
+          end
 
-          save_user_shibboleth_headers(resource, env)
-
-          resource.save
+    if (resource.nil? && Devise.shibboleth_create_user)
+            logger.info("Creating user(#{auth_key_value}).")
+      resource = new
+            save_user_shibboleth_headers(resource, env)
+            resource.save
+          end
           resource
-        end
+  end
 
         def find_for_shibb_authentication(conditions)
           find_for_authentication(conditions)
@@ -60,10 +56,10 @@ module Devise
         def save_user_shibboleth_headers(user, env)
           shib_config = YAML.load(ERB.new(File.read(::Devise.shibboleth_config || "#{Rails.root}/config/shibboleth.yml")).result)[Rails.env]
           shib_config['user-mapping'].each do |model, header|
-            logger.fatal("Saving #{env[header]} to #{model}")
+            logger.info("Saving #{env[header]} to #{model}")
             field = "#{model}="
             value = env[header]
-            user.send(field, value.to_s)
+            user.send(field, value.to_s) 
           end
         end
       end
