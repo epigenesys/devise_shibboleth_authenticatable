@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = "devise_shibboleth_authenticatable"
-  s.version = "0.9.0-NIRD"
+  s.version = "0.0.10-NIRD"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Joe George"]
