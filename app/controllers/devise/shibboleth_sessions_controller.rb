@@ -8,8 +8,6 @@ class Devise::ShibbolethSessionsController < Devise::SessionsController
     end
 
     resource = resource_class.new(sign_in_params)
-    clean_up_passwords(resource)
-    yield resource if block_given?
 
     shib_config = YAML.load(ERB.new(File.read(::Devise.shibboleth_config || "#{Rails.root}/config/shibboleth.yml")).result)[Rails.env]
 
@@ -18,7 +16,7 @@ class Devise::ShibbolethSessionsController < Devise::SessionsController
     destination << ":#{request.port.to_s}" unless request.port == 80
     destination << after_sign_in_path_for(resource)
     
-    shib_login_url = shib_config['shibb_login_url'] + "?target=" + URI.escape(destination, Regexp.new("[^#{URI::PATTERN::UNRESERVED}]"))
+    shib_login_url = shib_config['shibb_login_url'] 
 
     redirect_to(shib_login_url)
   end
