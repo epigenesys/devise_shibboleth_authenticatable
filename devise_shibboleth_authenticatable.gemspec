@@ -5,6 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = "devise_shibboleth_authenticatable"
+
   s.version = "0.0.11-NIRD"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
