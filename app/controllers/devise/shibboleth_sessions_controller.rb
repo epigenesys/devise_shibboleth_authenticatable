@@ -7,9 +7,9 @@ class Devise::ShibbolethSessionsController < Devise::SessionsController
       authenticate_with_shibboleth request.env
     end
 
-    #resource_class.new
-    #resource = resource_class.new
-    resource = build_resource({})
+    resource = resource_class.new(sign_in_params)
+    clean_up_passwords(resource)
+    yield resource if block_given?
 
     shib_config = YAML.load(ERB.new(File.read(::Devise.shibboleth_config || "#{Rails.root}/config/shibboleth.yml")).result)[Rails.env]
 
