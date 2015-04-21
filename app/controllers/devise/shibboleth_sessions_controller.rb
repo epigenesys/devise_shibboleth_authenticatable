@@ -8,7 +8,7 @@ class Devise::ShibbolethSessionsController < Devise::SessionsController
     end
 
     #resource_class.new
-    resource = resource_class.new_with_session(hash, session)
+    resource = resource_class.new
 
     shib_config = YAML.load(ERB.new(File.read(::Devise.shibboleth_config || "#{Rails.root}/config/shibboleth.yml")).result)[Rails.env]
 
