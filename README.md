@@ -20,7 +20,7 @@ Installation
 Inside your `Gemfile`, add:
 
     gem 'devise'
-    gem 'devise_shibboleth_authenticatable', github: 'epigenesys/devise_shibboleth_authenticatable'`
+    gem 'devise_shibboleth_authenticatable', github: 'epigenesys/devise_shibboleth_authenticatable'
 
 Setup
 -----
