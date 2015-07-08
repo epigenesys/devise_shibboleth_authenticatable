@@ -23,4 +23,8 @@ class Devise::ShibbolethSessionsController < Devise::SessionsController
     # Handles issues with misconfiguration (such as environment variables missing)
   end
 
+  def unregistered
+    # Handles the case where a user isn't registered (and shibboleth_create_user is set to false)
+  end
+
 end

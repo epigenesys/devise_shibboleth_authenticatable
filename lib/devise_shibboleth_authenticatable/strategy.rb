@@ -4,14 +4,16 @@ module Devise
   module Strategies
     class ShibbolethAuthenticatable < Authenticatable
       def valid?
-         request.env['eppn']
+        request.env['eppn']
       end
 
       def authenticate!
-	if resource = mapping.to.authenticate_with_shibboleth(request.env)
-	  success!(resource)
-        else 
-	  fail!(:invalid)
+      	if resource = mapping.to.authenticate_with_shibboleth(request.env)
+      	  success!(resource)
+        elsif request.env['eppn'] && !::Devise.shibboleth_create_user
+          redirect!(::Devise.action_url(request.url, mapping, 'unregistered'), eppn: request.env['eppn'])
+        else
+          fail!(:invalid)
         end
       end
 
