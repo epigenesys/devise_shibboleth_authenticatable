@@ -1,0 +1,19 @@
+<h3>Shibboleth misconfiguration</h3>
+
+<p>Sorry, but Shibboleth is misconfigured, and devise_shibboleth_authenticatable cannot proceed with authentication.</p>
+
+<p>Please check the <code>README.md</code> file for setup instructions.</p>
+
+<%- if params[:message] -%>
+<p>More information about why Shibboleth is misconfigured is available below:</p>
+
+<hr />
+
+<%- if params[:message].to_sym == :session_missing -%>
+<h4>Session environment missing</h4>
+
+<p>The session environment variables are missing, which may indicate that Shibboleth SP is not configured correctly.</p>
+
+<p>The <code>/users/shibboleth/callback</code> page needs to be protected by Shibboleth so that the environment variables are exposed to devise_shibboleth_authenticatable.</p>
+<%- end -%>
+<%- end -%>
