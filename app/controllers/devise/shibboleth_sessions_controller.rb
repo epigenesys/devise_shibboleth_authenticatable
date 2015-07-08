@@ -15,8 +15,13 @@ class Devise::ShibbolethSessionsController < Devise::SessionsController
   end
 
   def destroy
-    # Can't fully log out from Shibboleth until the browser is closed.
-    super
+    if signed_in?(resource_name)
+      sign_out(resource_name)
+    else
+      reset_session
+    end
+
+    redirect_to(::Devise.shib_logout_url(request.url))
   end
 
   def misconfiguration
