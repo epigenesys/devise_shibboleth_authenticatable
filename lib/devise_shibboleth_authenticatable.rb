@@ -5,6 +5,7 @@ require 'devise_shibboleth_authenticatable/exception'
 require 'devise_shibboleth_authenticatable/logger'
 require 'devise_shibboleth_authenticatable/schema'
 require 'devise_shibboleth_authenticatable/routes'
+require 'devise_shibboleth_authenticatable/version'
 
 begin
   Rails::Engine
